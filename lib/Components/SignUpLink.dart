@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../Screens/Signup/index.dart';
 
 class SignUp extends StatelessWidget {
   SignUp();
@@ -9,7 +10,10 @@ class SignUp extends StatelessWidget {
         top: 160.0,
       ),
       onPressed: () {
-        Navigator.pushReplacementNamed(context, "/signup");
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => SignupScreen()),
+        );
         //print("peresss");
       },
       child: new Text(

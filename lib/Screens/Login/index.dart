@@ -9,6 +9,7 @@ import '../../Components/Form.dart';
 import '../../Components/SignInButton.dart';
 import '../../Components/BabyImage.dart';
 import 'package:flutter/services.dart';
+import '../ForgotPassword/index.dart';
 import 'package:flutter/scheduler.dart' show timeDilation;
 
 class LoginScreen extends StatefulWidget {
@@ -92,6 +93,22 @@ class LoginScreenState extends State<LoginScreen>
                             children: <Widget>[
                               Container(height: 250.0, width: null),
                               new FormContainer(),
+                              GestureDetector(
+                                  //You need to make my child interactive
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => ForgotScreen()),
+                                    );
+                                  },
+                                  child: Padding(
+                                      padding: EdgeInsets.only(
+                                          left: 200.0, top: 18.0),
+                                      child: Text("Forogt password",
+                                          textAlign: TextAlign.right,
+                                          style:
+                                              TextStyle(color: Colors.white)))),
                               new SignUp()
                             ],
                           ),

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../Login/index.dart';
+import './Timeline.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key key}) : super(key: key);
@@ -11,6 +13,16 @@ PageController pageController;
 class HomeScreenState extends State<HomeScreen> {
   int _page = 0;
   bool triedSilentLogin = false;
+  int _currentIndex = 0;
+  final List<Widget> _children = [
+    TimelineScreen(),
+    Container(
+      color: Colors.yellow,
+    ),
+    Container(
+      color: Colors.black,
+    ),
+  ];
   void navigationTapped(int page) {
     //Animating Page
     pageController.jumpToPage(page);
@@ -19,6 +31,12 @@ class HomeScreenState extends State<HomeScreen> {
   void onPageChanged(int page) {
     setState(() {
       this._page = page;
+    });
+  }
+
+  void onTabTapped(int index) {
+    setState(() {
+      _currentIndex = index;
     });
   }
 
@@ -41,56 +59,106 @@ class HomeScreenState extends State<HomeScreen> {
         title: Text("Baby app"),
         backgroundColor: Color.fromRGBO(162, 146, 199, 0.8),
       ),
-      drawer: Drawer(),
-      body: new PageView(
-        children: [
-          new Container(
-            color: Colors.red,
+      drawer: new Drawer(
+          child: Container(
+              color: Color.fromRGBO(247, 64, 106, 1.0),
+              child: new my_drawer(
+                  email: "Devefy@gmail.com", name: "Abdi hamid"))),
+      body: _children[_currentIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        onTap: onTabTapped, // new
+        currentIndex: _currentIndex,
+        // this will be set when a new tab is tapped
+        items: [
+          BottomNavigationBarItem(
+            icon: new Icon(Icons.public),
+            title: new Text('Community'),
           ),
-          new Container(
-            color: Colors.blue,
+          BottomNavigationBarItem(
+            icon: new Icon(Icons.timeline),
+            title: new Text('Timeline'),
           ),
-          new Container(
-            color: Colors.green,
-          ),
-          new Container(
-            color: Colors.white,
-          ),
-          new Container(
-            color: Colors.yellow,
-          )
+          BottomNavigationBarItem(
+              icon: Icon(Icons.person), title: Text('Profile'))
         ],
-        controller: pageController,
-        physics: new NeverScrollableScrollPhysics(),
-        onPageChanged: onPageChanged,
-      ),
-      bottomNavigationBar: new BottomNavigationBar(
-        items: <BottomNavigationBarItem>[
-          new BottomNavigationBarItem(
-              icon: new Icon(Icons.home, color: Colors.grey),
-              title: new Container(),
-              backgroundColor: Colors.white),
-          new BottomNavigationBarItem(
-              icon: new Icon(Icons.search, color: Colors.grey),
-              title: new Container(),
-              backgroundColor: Colors.white),
-          new BottomNavigationBarItem(
-              icon: new Icon(Icons.add_circle, color: Colors.grey),
-              title: new Container(),
-              backgroundColor: Colors.white),
-          new BottomNavigationBarItem(
-              icon: new Icon(Icons.star, color: Colors.grey),
-              title: new Container(),
-              backgroundColor: Colors.white),
-          new BottomNavigationBarItem(
-              icon: new Icon(Icons.person_outline, color: Colors.grey),
-              title: new Container(),
-              backgroundColor: Colors.white),
-        ],
-        onTap: navigationTapped,
-        currentIndex: _page,
-        type: BottomNavigationBarType.fixed,
       ),
     );
+  }
+}
+
+class my_drawer extends StatelessWidget {
+  String email, name;
+
+  my_drawer({this.name, this.email});
+
+  @override
+  Widget build(BuildContext context) {
+    return new Container(
+        child: Column(
+      children: <Widget>[
+        new UserAccountsDrawerHeader(
+          accountEmail: new Text(email),
+          accountName: new Text(name),
+          currentAccountPicture: new CircleAvatar(
+            backgroundImage: new AssetImage("assets/profile_2.jpg"),
+          ),
+          decoration: new BoxDecoration(
+            color: Color.fromRGBO(247, 64, 106, 1.0),
+          ),
+        ),
+        new ListTile(
+          title: new Text(
+            "Add baby",
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+          leading: new Icon(Icons.home),
+          onTap: () {
+            print("Home");
+          },
+        ),
+        new ListTile(
+          title: new Text(
+            "Invite and Earn",
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+          leading: new Icon(Icons.email),
+          onTap: () {
+            print("Notification");
+          },
+        ),
+        new ListTile(
+          title: new Text(
+            "Family member",
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+          leading: new Icon(Icons.child_friendly),
+          onTap: () {
+            print("Notification");
+          },
+        ),
+        new ListTile(
+          title: new Text(
+            "Feedback",
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+          leading: new Icon(Icons.label),
+          onTap: () {
+            print("Notification");
+          },
+        ),
+        new ListTile(
+          title: new Text("Logout",
+              style:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+          leading: new Icon(Icons.exit_to_app),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => LoginScreen()),
+            );
+          },
+        )
+      ],
+    ));
   }
 }

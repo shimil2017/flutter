@@ -4,24 +4,27 @@ class BabyTimeline {
   String location;
   List fileapth;
   String text;
-  DateTime createdDate;
+  String created_date;
   List likes;
   List comments;
   List tag;
   String posttype;
   int privacy;
+  String relation;
+
   BabyTimeline(
       this.age,
       this.name,
       this.location,
       this.fileapth,
       this.text,
-      this.createdDate,
+      this.created_date,
       this.likes,
       this.comments,
       this.tag,
       this.posttype,
-      this.privacy);
+      this.privacy,
+      this.relation);
 
   // NewsItem(this.description, this.title, this.url, this.urlToImage);
   static List<BabyTimeline> mapStringtoList(List<dynamic> jsonList) {
@@ -33,12 +36,13 @@ class BabyTimeline {
             r['location'],
             r['fileapth'],
             r['text'],
-            r['createdDate'],
+            r['created_date'],
             r['likes'],
             r['comments'],
             r['tag'],
             r['posttype'],
-            r['privacy']))
+            r['privacy'],
+            r['relation']))
         .toList();
   }
 }

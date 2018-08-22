@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:babyapp/validator.dart';
+import '../util/validator.dart';
 import 'package:rxdart/rxdart.dart';
 
 class LoginViewModel {
@@ -20,13 +20,15 @@ class LoginViewModel {
   // Transformer
   final emailTransformer =
       StreamTransformer<String, String>.fromHandlers(handleData: (email, sink) {
-    Validator.isEmailValid(email) ? sink.add(email) : sink.addError('请输入有效的邮箱');
+    Validator.isEmailValid(email)
+        ? sink.add(email)
+        : sink.addError('email is invalid');
   });
   final passwordTransformer = StreamTransformer<String, String>.fromHandlers(
       handleData: (password, sink) {
     Validator.isPasswordValid(password)
         ? sink.add(password)
-        : sink.addError('密码必须至少包含一个数字，大写和小写字母');
+        : sink.addError('Password not acceptable');
   });
 
   // output

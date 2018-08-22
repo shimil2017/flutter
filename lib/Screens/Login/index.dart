@@ -11,6 +11,8 @@ import '../../Components/BabyImage.dart';
 import 'package:flutter/services.dart';
 import '../ForgotPassword/index.dart';
 import 'package:flutter/scheduler.dart' show timeDilation;
+import '../../Bloc/login_view_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key key}) : super(key: key);
@@ -20,6 +22,7 @@ class LoginScreen extends StatefulWidget {
 
 class LoginScreenState extends State<LoginScreen>
     with TickerProviderStateMixin {
+  final vm = new LoginViewModel();
   AnimationController _loginButtonController;
   var animationStatus = 0;
   @override
@@ -33,6 +36,10 @@ class LoginScreenState extends State<LoginScreen>
   void dispose() {
     _loginButtonController.dispose();
     super.dispose();
+  }
+
+  _authenticateUser(AsyncSnapshot<dynamic> snapshot) async {
+    print(snapshot.data);
   }
 
   Future<Null> _playAnimation() async {
@@ -92,7 +99,77 @@ class LoginScreenState extends State<LoginScreen>
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: <Widget>[
                               Container(height: 250.0, width: null),
-                              new FormContainer(),
+                              new Container(
+                                  margin: new EdgeInsets.only(
+                                      right: 20.0,
+                                      left: 20.0,
+                                      bottom: 10.0,
+                                      top: 10.0),
+                                  child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: <Widget>[
+                                        StreamBuilder(
+                                            stream: vm.emailStream,
+                                            builder: (BuildContext context,
+                                                AsyncSnapshot<dynamic>
+                                                    snapshot) {
+                                              return TextField(
+                                                onChanged: vm.updateEmail,
+                                                obscureText: false,
+                                                keyboardType:
+                                                    TextInputType.emailAddress,
+                                                decoration: new InputDecoration(
+                                                  errorText: snapshot.error,
+                                                  icon: new Icon(
+                                                    Icons.lock_outline,
+                                                    color: Colors.white,
+                                                  ),
+                                                  border: InputBorder.none,
+                                                  hintText: 'email',
+                                                  hintStyle: const TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 15.0),
+                                                  contentPadding:
+                                                      const EdgeInsets.only(
+                                                          top: 30.0,
+                                                          right: 30.0,
+                                                          bottom: 30.0,
+                                                          left: 5.0),
+                                                ),
+                                              );
+                                            }),
+                                        StreamBuilder(
+                                            stream: vm.passwordStream,
+                                            builder: (BuildContext context,
+                                                AsyncSnapshot<dynamic>
+                                                    snapshot) {
+                                              return TextField(
+                                                onChanged: vm.updatePassword,
+                                                obscureText: true,
+                                                keyboardType:
+                                                    TextInputType.text,
+                                                decoration: new InputDecoration(
+                                                  errorText: snapshot.error,
+                                                  icon: new Icon(
+                                                    Icons.lock_outline,
+                                                    color: Colors.white,
+                                                  ),
+                                                  border: InputBorder.none,
+                                                  hintText: 'Password',
+                                                  hintStyle: const TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 15.0),
+                                                  contentPadding:
+                                                      const EdgeInsets.only(
+                                                          top: 30.0,
+                                                          right: 30.0,
+                                                          bottom: 30.0,
+                                                          left: 5.0),
+                                                ),
+                                              );
+                                            }),
+                                      ])),
                               GestureDetector(
                                   //You need to make my child interactive
                                   onTap: () {
@@ -113,24 +190,36 @@ class LoginScreenState extends State<LoginScreen>
                             ],
                           ),
                           animationStatus == 0
-                              ? new Padding(
-                                  padding: const EdgeInsets.only(bottom: 50.0),
-                                  child: new InkWell(
-                                      onTap: () {
-                                        setState(() {
-                                          animationStatus = 1;
-                                        });
-                                        _playAnimation();
-                                      },
-                                      child: new SignIn()),
-                                )
+                              ? loginButton(vm)
                               : new StaggerAnimation(
-                                  buttonController:
-                                      _loginButtonController.view),
+                                  buttonController: _loginButtonController.view,
+                                  login: true),
                         ],
                       ),
                     ],
                   ))),
         )));
+  }
+
+  Widget loginButton(LoginViewModel vm) {
+    return StreamBuilder(
+      stream: vm.submitValid,
+      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 50.0),
+          child: new InkWell(
+              onTap: snapshot.hasData
+                  ? () {
+                      setState(() {
+                        animationStatus = 1;
+                      });
+                      _playAnimation();
+                      _authenticateUser(snapshot);
+                    }
+                  : null,
+              child: new SignIn()),
+        );
+      },
+    );
   }
 }

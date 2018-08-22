@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 class StaggerAnimation extends StatelessWidget {
-  StaggerAnimation({Key key, this.buttonController})
+  bool login;
+  StaggerAnimation({Key key, this.buttonController, this.login})
       : buttonSqueezeanimation = new Tween(
           begin: 320.0,
           end: 70.0,
-        )
-            .animate(
+        ).animate(
           new CurvedAnimation(
             parent: buttonController,
             curve: new Interval(
@@ -19,8 +19,7 @@ class StaggerAnimation extends StatelessWidget {
         buttomZoomOut = new Tween(
           begin: 70.0,
           end: 1000.0,
-        )
-            .animate(
+        ).animate(
           new CurvedAnimation(
             parent: buttonController,
             curve: new Interval(
@@ -33,8 +32,7 @@ class StaggerAnimation extends StatelessWidget {
         containerCircleAnimation = new EdgeInsetsTween(
           begin: const EdgeInsets.only(bottom: 50.0),
           end: const EdgeInsets.only(bottom: 0.0),
-        )
-            .animate(
+        ).animate(
           new CurvedAnimation(
             parent: buttonController,
             curve: new Interval(
@@ -118,7 +116,7 @@ class StaggerAnimation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     buttonController.addListener(() {
-      if (buttonController.isCompleted) {
+      if (buttonController.isCompleted && login) {
         Navigator.pushNamed(context, "/home");
       }
     });
